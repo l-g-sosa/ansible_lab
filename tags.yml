@@ -4,20 +4,29 @@
   become: true
   pre_tasks:
 
-  - name: install updates (Fedora)
+  - name: update repo cache (Fedora)
     tags: always
     dnf:
-      update_only: yes
       update_cache: yes
+    changed_when: false
     when: ansible_distribution == "Fedora"
 
-  - name: install updates (Ubuntu)
+  - name: update repo cache (Ubuntu)
     tags: always
     apt:
-      upgrade: dist
       update_cache: yes
+    changed_when: false
     when: ansible_distribution == "Ubuntu"
 
+- hosts: all
+  become: true
+  tasks:
+
+  - name: add ssh key for penny
+    tags: always
+    authorized_key:
+      user: penny
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMkzvczMQwys0GurvOWndfusl8nQSxBQUp+JTb/fze9/ Ansible"
 
 - hosts: workstations
   become: true

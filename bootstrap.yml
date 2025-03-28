@@ -1,0 +1,44 @@
+---
+
+- hosts:  all
+  become: true
+  pre_tasks:
+
+  - name: install updates (Fedora)
+    tags: always
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "Fedora"
+
+  - name: install updates (Ubuntu)
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: create penny user
+    tags: always
+    user:
+      name: penny
+      groups: root
+
+  - name: add ssh key for penny
+    tags: always
+    authorized_key:
+      user: penny
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMkzvczMQwys0GurvOWndfusl8nQSxBQUp+JTb/fze9/ Ansible"
+
+  - name: add sudoers file for penny
+    tags: always
+    copy:
+      src: sudoer_penny
+      dest: /etc/sudoers.d/penny
+      owner: root
+      group: root
+      mode: 0440
