@@ -1,0 +1,6 @@
+ - name: add ssh key for penny
+   authorized_key:
+     user: penny
+     key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMkzvczMQwys0GurvOWndfusl8nQSxBQUp+JTb/fze9/ Ansible"
+
+

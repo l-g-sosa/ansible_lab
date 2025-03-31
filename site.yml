@@ -1,65 +1,44 @@
 ---
 
-- hosts:  all
+- hosts: all
   become: true
   pre_tasks:
 
-  - name: install updates (Fedora)
+  - name: update repository index (CentOS)
+    tags: always
     dnf:
-      update_only: yes
       update_cache: yes
-    when: ansible_distribution == "Fedora"
+    changed_when: false
+    when: ansible_distribution == "CentOS"
 
-  - name: install updates (Ubuntu)
+  - name: update repository index (Ubuntu)
+    tags: always
     apt:
-      upgrade: dist
       update_cache: yes
+    changed_when: false
     when: ansible_distribution == "Ubuntu"
+
+- hosts: all
+  become: true
+  roles:
+    - base
+
+- hosts: workstations
+  become: true
+  roles:
+    - workstations
 
 - hosts: web_servers
   become: true
-  tasks:
-
-  - name: install apache and php for Ubuntu servers
-    apt:
-      name:
-        - apache2
-        - libapache2-mod-php
-      state: latest
-    when: ansible_distribution == "Ubuntu"
-
-  - name: install apache and php for Fedora servers
-    dnf:
-      name:
-        - httpd
-        - php
-      state: latest
-    when: ansible_distribution == "Fedora"
-
+  roles:
+    - web_servers
 
 - hosts: db_servers
   become: true
-  tasks:
-
-  - name: install mariadb package (Fedora)
-    dnf:
-      name: mariadb
-      state: latest
-    when: ansible_distribution == "Fedora"
-
-  - name: install mariadb package (Ubuntu)
-    apt:
-      name: mariadb-server
-      state: latest
-    when: ansible_distribution == "Ubuntu"
-
+  roles:
+    - db_servers
 
 - hosts: file_servers
   become: true
-  tasks:
-
-  - name: install samba package
-    package:
-      name: samba
-      state: latest
-
+  roles:
+    - file_servers
