@@ -1,0 +1,11 @@
+- name: restart_sshd (Fedora)
+  service:
+    name: sshd
+    state: restarted
+  when: ansible_distribution == "Fedora"
+
+- name: restart_sshd (Ubuntu)
+  service:
+    name: ssh
+    state: restarted
+  when: ansible_distribution == "Ubuntu"
